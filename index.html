@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthConnect Perú | Plataforma de Salud Digital</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0f766e;
+            --primary-light: #14b8a6;
+            --primary-dark: #134e4a;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow: 0 10px 30px -12px rgba(15, 23, 42, 0.08);
+            --shadow-lg: 0 25px 50px -12px rgba(15, 23, 42, 0.15);
+            --radius: 16px;
+            --radius-lg: 24px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+        /* HEADER */
+        .header { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); padding: 0 32px; height: 72px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; gap: 12px; color: var(--secondary); }
+        .logo i { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 12px; }
+        
+        .nav-desktop { display: flex; gap: 4px; }
+        .nav-desktop button { background: transparent; color: var(--text-light); border: none; padding: 10px 16px; border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: var(--transition); font-family: inherit; display: flex; align-items: center; gap: 8px; }
+        .nav-desktop button:hover { background: #f1f5f9; color: var(--primary); }
+        .nav-desktop button.active { background: var(--primary); color: #fff; }
+
+        .hamburger { display: none; background: var(--bg); border: 1px solid var(--border); color: var(--secondary); font-size: 1.2rem; cursor: pointer; padding: 10px 14px; border-radius: 10px; }
+        
+        .mobile-nav { display: flex; position: fixed; top: 0; right: -100%; bottom: 0; width: 280px; background: #fff; z-index: 1001; flex-direction: column; padding: 24px; gap: 8px; box-shadow: -10px 0 40px rgba(0,0,0,0.1); transition: right 0.4s ease; }
+        .mobile-nav.open { right: 0; }
+        .mobile-nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+        .mobile-nav button { background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 14px 18px; border-radius: 12px; cursor: pointer; font-size: 0.9rem; text-align: left; font-family: inherit; font-weight: 600; transition: var(--transition); display: flex; align-items: center; gap: 12px; }
+        .mobile-nav button:hover, .mobile-nav button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 999; }
+        .overlay.show { display: block; }
+
+        /* MAIN */
+        .main { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding: 40px 24px 60px; }
+        .section-content { display: none; animation: fadeIn 0.5s ease; }
+        .section-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* COMPONENTS */
+        .card { background: var(--card); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .card-header { margin-bottom: 20px; }
+        .card-header h2 { font-size: 1.25rem; color: var(--secondary); font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .card-header h2 i { color: var(--primary); }
+        .card-header p { color: var(--text-light); font-size: 0.9rem; margin-top: 4px; }
+
+        .hero { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center; padding: 60px 40px; background: linear-gradient(135deg, #134e4a 0%, #0f766e 100%); border-radius: var(--radius-lg); margin-bottom: 40px; color: #fff; overflow: hidden; }
+        .hero h1 { font-size: 2.8rem; font-weight: 800; margin-bottom: 16px; line-height: 1.1; }
+        .hero .subtitle { color: #a7f3d0; font-size: 1.2rem; margin-bottom: 32px; }
+        .hero-img img { width: 100%; max-width: 400px; border-radius: var(--radius); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 12px; font-weight: 600; cursor: pointer; border: none; font-size: 0.9rem; transition: var(--transition); font-family: inherit; }
+        .btn-primary { background: #fff; color: var(--primary); }
+        .btn-primary:hover { background: var(--accent); color: #fff; }
+        .btn-outline { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.5); }
+        .btn-outline:hover { background: rgba(255,255,255,0.1); }
+        .btn-teal { background: var(--primary); color: #fff; }
+        .btn-teal:hover { background: var(--primary-dark); }
+        .btn-sm { padding: 8px 14px; font-size: 0.8rem; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { background: #fff; border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
+        .stat-box .stat-icon { width: 44px; height: 44px; background: rgba(20, 184, 166, 0.1); color: var(--primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+        .stat-box .stat-value { font-size: 2rem; font-weight: 800; color: var(--secondary); }
+        .stat-box .stat-label { font-size: 0.85rem; color: var(--text-light); }
+
+        .partners { display: flex; gap: 24px; flex-wrap: wrap; }
+        .partner { background: #fff; padding: 12px 24px; border-radius: 12px; font-weight: 700; color: var(--secondary); border: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        .list-item:last-child { border-bottom: none; }
+        
+        .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+        .badge-green { background: #d1fae5; color: #065f46; }
+        .badge-yellow { background: #fef3c7; color: #92400e; }
+        .badge-red { background: #fee2e2; color: #991b1b; }
+
+        .msg-item { padding: 18px; border-left: 4px solid var(--primary); background: #f8fafc; margin-bottom: 12px; border-radius: 0 12px 12px 0; }
+        .msg-item .msg-meta { font-size: 0.75rem; color: var(--text-light); font-weight: 600; margin-bottom: 6px; }
+        
+        .team-card { background: #fff; padding: 24px 16px; border-radius: var(--radius); border: 1px solid var(--border); text-align: center; }
+        .team-card .avatar { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 16px; overflow: hidden; border: 3px solid var(--primary-light); }
+        .team-card .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border); }
+        .toggle { width: 44px; height: 24px; background: #cbd5e1; border-radius: 12px; position: relative; cursor: pointer; transition: var(--transition); }
+        .toggle.on { background: var(--success); }
+        .toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: var(--transition); }
+        .toggle.on::after { left: 22px; }
+
+        .footer { background: var(--secondary); color: #94a3b8; text-align: center; padding: 32px 24px; font-size: 0.85rem; margin-top: auto; }
+        .footer a { color: #fff; text-decoration: none; }
+
+        @media (max-width: 900px) {
+            .nav-desktop { display: none; }
+            .hamburger { display: block; }
+            .hero { grid-template-columns: 1fr; padding: 40px 20px; }
+            .hero-img { display: none; }
+            .two-col { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay" id="overlay"></div>
+
+    <header class="header">
+        <div class="logo"><i class="fa-solid fa-heart-pulse"></i> HealthConnect</div>
+        <nav class="nav-desktop" id="navDesktop">
+            <button data-section="home" class="active"><i class="fa-solid fa-house"></i> Inicio</button>
+            <button data-section="salud"><i class="fa-solid fa-heart"></i> Mi Salud</button>
+            <button data-section="asistente"><i class="fa-solid fa-robot"></i> Asistente IA</button>
+            <button data-section="instituciones"><i class="fa-solid fa-hospital"></i> Instituciones</button>
+            <button data-section="api"><i class="fa-solid fa-code-branch"></i> API</button>
+            <button data-section="sobre"><i class="fa-solid fa-circle-info"></i> Nosotros</button>
+            <button data-section="mensajes"><i class="fa-solid fa-comment-dots"></i> Mensajes</button>
+            <button data-section="servicios"><i class="fa-solid fa-list-check"></i> Servicios</button>
+            <button data-section="perfil"><i class="fa-solid fa-user"></i> Perfil</button>
+        </nav>
+        <button class="hamburger" id="hamburgerBtn"><i class="fa-solid fa-bars"></i></button>
+    </header>
+
+    <nav class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <div class="logo" style="font-size: 1.1rem"><i class="fa-solid fa-heart-pulse"></i> HealthConnect</div>
+            <button class="hamburger" id="closeNavBtn" style="border:none; background:none; font-size:1.5rem;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <button data-section="home" class="active"><i class="fa-solid fa-house"></i> Inicio</button>
+        <button data-section="salud"><i class="fa-solid fa-heart"></i> Mi Salud</button>
+        <button data-section="asistente"><i class="fa-solid fa-robot"></i> Asistente IA</button>
+        <button data-section="instituciones"><i class="fa-solid fa-hospital"></i> Instituciones</button>
+        <button data-section="api"><i class="fa-solid fa-code-branch"></i> API</button>
+        <button data-section="sobre"><i class="fa-solid fa-circle-info"></i> Nosotros</button>
+        <button data-section="mensajes"><i class="fa-solid fa-comment-dots"></i> Mensajes</button>
+        <button data-section="servicios"><i class="fa-solid fa-list-check"></i> Servicios</button>
+        <button data-section="perfil"><i class="fa-solid fa-user"></i> Perfil</button>
+    </nav>
+
+    <main class="main">
+        
+        <!-- INICIO -->
+        <div id="home" class="section-content active">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>Salud conectada, <br>sin fragmentación.</h1>
+                    <p class="subtitle">La plataforma basada en HL7 FHIR que unifica tu historial clínico. Optimiza el tiempo médico y garantiza la continuidad del cuidado.</p>
+                    <div style="display:flex; gap:16px; flex-wrap:wrap;">
+                        <button class="btn btn-primary" onclick="navigate('salud')"><i class="fa-solid fa-user-doctor"></i> Acceder al Portal</button>
+                        <button class="btn btn-outline" onclick="navigate('instituciones')"><i class="fa-solid fa-hospital"></i> Integrar Institución</button>
+                    </div>
+                </div>
+                <div class="hero-img">
+                    <img src="" alt="Doctora">
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-icon"><i class="fa-solid fa-file-medical"></i></div>
+                    <div class="stat-value">68%</div>
+                    <div class="stat-label">Médicos atienden pacientes con datos dispersos</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+                    <div class="stat-value">5-10 min</div>
+                    <div class="stat-label">Perdidos por consulta buscando historial</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon"><i class="fa-solid fa-tree"></i></div>
+                    <div class="stat-value">500</div>
+                    <div class="stat-label">Hojas ahorradas por médico al año</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon"><i class="fa-solid fa-coins"></i></div>
+                    <div class="stat-value">S/100M</div>
+                    <div class="stat-label">Ahorro potencial en exámenes duplicados</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-handshake"></i> Ecosistema de Salud</h2>
+                    <p>Stakeholders clave que conforman la red de interoperabilidad</p>
+                </div>
+                <div class="partners">
+                    <span class="partner"><i class="fa-solid fa-building-columns"></i> MINSA</span>
+                    <span class="partner"><i class="fa-solid fa-hospital"></i> EsSalud</span>
+                    <span class="partner"><i class="fa-solid fa-briefcase-medical"></i> SANNA</span>
+                    <span class="partner"><i class="fa-solid fa-flask-vial"></i> Suiza Lab</span>
+                    <span class="partner"><i class="fa-solid fa-prescription-bottle-medical"></i> MiFarma</span>
+                    <span class="partner"><i class="fa-solid fa-shield-halved"></i> SUSALUD</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MI SALUD -->
+        <div id="salud" class="section-content">
+            <div class="card" style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border:none;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <div style="display:flex; align-items:center; gap:16px;">
+                        <img src="" style="width:60px; height:60px; border-radius:50%; object-fit:cover; border:3px solid #fff;" alt="Dra. Espinoza">
+                        <div>
+                            <h3 style="font-size:1.4rem; margin-bottom:4px;">Dra. Katherine Espinoza</h3>
+                            <p style="color:var(--text-light); font-size:0.9rem;">Perfil: Profesional médico, alta carga asistencial.</p>
+                        </div>
+                    </div>
+                    <span class="badge badge-green"><i class="fa-solid fa-circle-check"></i> HCE Activa</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2><i class="fa-solid fa-chart-line"></i> Resumen de Eficiencia</h2><p>Basado en el análisis del Buyer Persona e investigación de campo (n=25)</p></div>
+                <div class="stats-grid" style="margin-bottom:0;">
+                    <div class="stat-box"><div class="stat-icon"><i class="fa-solid fa-stopwatch"></i></div><div class="stat-value">1.5h</div><div class="stat-label">Tiempo recuperado por día (20 consultas)</div></div>
+                    <div class="stat-box"><div class="stat-icon"><i class="fa-solid fa-file-circle-check"></i></div><div class="stat-value">100%</div><div class="stat-label">Datos centralizados y actualizados</div></div>
+                    <div class="stat-box"><div class="stat-icon"><i class="fa-solid fa-mobile-screen"></i></div><div class="stat-value">45%</div><div class="stat-label">Acceso móvil prioritario resuelto</div></div>
+                    <div class="stat-box"><div class="stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="stat-value">0%</div><div class="stat-label">Riesgo de datos incorrectos</div></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2><i class="fa-solid fa-clipboard-list"></i> Hallazgos Clínicos (Buyer Persona)</h2></div>
+                <div class="list-item"><span><i class="fa-solid fa-check-circle" style="color:var(--success); margin-right:8px;"></i> Fragmentación estructural</span> <span class="badge badge-green">Resuelto</span></div>
+                <div class="list-item"><span><i class="fa-solid fa-check-circle" style="color:var(--success); margin-right:8px;"></i> Pérdida de tiempo en búsqueda de historial</span> <span class="badge badge-green">Resuelto</span></div>
+                <div class="list-item"><span><i class="fa-solid fa-check-circle" style="color:var(--success); margin-right:8px;"></i> Acceso multiplataforma (Celular/PC)</span> <span class="badge badge-green">Resuelto</span></div>
+                <div class="list-item"><span><i class="fa-solid fa-check-circle" style="color:var(--success); margin-right:8px;"></i> Miedo a fallas en momentos críticos</span> <span class="badge badge-green">Resuelto</span></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2><i class="fa-solid fa-vial-circle-check"></i> Últimos Laboratorios Unificados</h2><p>Resultados integrados de Suiza Lab - 15/06/2026</p></div>
+                <div class="list-item"><span>Glucosa</span><span>95 mg/dL</span><span class="badge badge-green">Normal</span></div>
+                <div class="list-item"><span>Colesterol</span><span>220 mg/dL</span><span class="badge badge-yellow">Elevado</span></div>
+                <div class="list-item"><span>Triglicéridos</span><span>150 mg/dL</span><span class="badge badge-green">Normal</span></div>
+                <div class="list-item"><span>Hemoglobina</span><span>14.2 g/dL</span><span class="badge badge-green">Normal</span></div>
+            </div>
+        </div>
+
+        <!-- ASISTENTE IA (CHATBASE) -->
+        <div id="asistente" class="section-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-robot"></i> HealthConnect AI</h2>
+                    <p>Tu asistente médico inteligente. Pregúntame sobre historial, laboratorios o citas.</p>
+                </div>
+            </div>
+
+            <div class="card" style="padding: 0; overflow: hidden;">
+                <iframe
+                    src="https://www.chatbase.co/chatbot-iframe/4d52QO1FUm5j4Lkj_zwEd"
+                    width="100%"
+                    style="height: 100%; min-height: 700px"
+                    frameborder="0"
+                    allow="microphone"
+                ></iframe>
+            </div>
+        </div>
+
+        <!-- INSTITUCIONES -->
+        <div id="instituciones" class="section-content">
+            <div class="card">
+                <div class="card-header"><h2><i class="fa-solid fa-globe"></i> Análisis PESTEL</h2><p>Entorno del sistema de salud peruano</p></div>
+                <div class="grid-3" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                    <div style="background:#f8fafc; padding:20px; border-radius:12px; border-left:4px solid var(--primary);"><h3 style="margin-bottom:8px;"><i class="fa-solid fa-landmark"></i> Político</h3><p style="font-size:0.85rem; color:var(--text-light);">Impulso gubernamental a la digitalización, pero con limitaciones en interoperabilidad entre público y privado.</p></div>
+                    <div style="background:#f8fafc; padding:20px; border-radius:12px; border-left:4px solid var(--primary);"><h3 style="margin-bottom:8px;"><i class="fa-solid fa-money-bill-trend-up"></i> Económico</h3><p style="font-size:0.85rem; color:var(--text-light);">Alto costo por duplicación de exámenes. La digitalización reduce costos a largo plazo.</p></div>
+                    <div style="background:#f8fafc; padding:20px; border-radius:12px; border-left:4px solid var(--primary);"><h3 style="margin-bottom:8px;"><i class="fa-solid fa-users"></i> Social</h3><p style="font-size:0.85rem; color:var(--text-light);">Demanda de servicios eficientes. Insatisfacción por pérdida de información médica.</p></div>
+                    <div style="background:#f8fafc; padding:20px; border-radius:12px; border-left:4px solid var(--primary);"><h3 style="margin-bottom:8px;"><i class="fa-solid fa-microchip"></i> Tecnológico</h3><p style="font-size:0.85rem; color:var(--text-light);">Sistemas poco integrados y procesos manuales. Oportunidad para mejorar conectividad.</p></div>
+                    <div style="background:#f8fafc; padding:20px; border-radius:12px; border-left:4px solid var(--primary);"><h3 style="margin-bottom:8px;"><i class="fa-solid fa-leaf"></i> Ecológico</h3><p style="font-size:0.85rem; color:var(--text-light);">Reducción drástica del uso de papel, contribuyendo al cuidado del medio ambiente.</p></div>
+                    <div style="background:#f8fafc; padding:20px; border-radius:12px; border-left:4px solid var(--primary);"><h3 style="margin-bottom:8px;"><i class="fa-solid fa-gavel"></i> Legal</h3><p style="font-size:0.85rem; color:var(--text-light);">Regulado por la Ley de Protección de Datos Personales. Exige altos estándares de seguridad.</p></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2><i class="fa-solid fa-chess"></i> Matriz Poder-Interés</h2><p>Mapa de stakeholders del ecosistema</p></div>
+                <h3 style="margin-bottom:12px; color:var(--secondary);">Jugadores Clave (Alto poder - Alto interés)</h3>
+                <div class="list-item"><span><i class="fa-solid fa-building-columns" style="margin-right:8px;"></i> MINSA</span> <span class="badge badge-red">Rector</span></div>
+                <div class="list-item"><span><i class="fa-solid fa-hospital" style="margin-right:8px;"></i> EsSalud</span> <span class="badge badge-red">Mayor base</span></div>
+                <div class="list-item"><span><i class="fa-solid fa-briefcase-medical" style="margin-right:8px;"></i> Clínicas Privadas (SANNA, Anglo)</span> <span class="badge badge-red">Datos clínicos</span></div>
+                <div class="list-item"><span><i class="fa-solid fa-user-doctor" style="margin-right:8px;"></i> Médicos Tratantes</span> <span class="badge badge-red">Usuarios directos</span></div>
+                <div class="list-item"><span><i class="fa-solid fa-user" style="margin-right:8px;"></i> Pacientes</span> <span class="badge badge-red">Propietarios datos</span></div>
+                
+                <h3 style="margin:24px 0 12px; color:var(--secondary);">Mantener Satisfechos (Alto poder - Bajo interés)</h3>
+                <div class="list-item"><span><i class="fa-solid fa-balance-scale" style="margin-right:8px;"></i> Congreso / MEF / PCM</span> <span class="badge badge-yellow">Normativa/Ppto</span></div>
+                <div class="list-item"><span><i class="fa-solid fa-shield-halved" style="margin-right:8px;"></i> SUSALUD / Aseguradoras</span> <span class="badge badge-yellow">Fiscalizadores</span></div>
+
+                <h3 style="margin:24px 0 12px; color:var(--secondary);">Mantener Informados (Bajo poder - Alto interés)</h3>
+                <div class="list-item"><span><i class="fa-solid fa-flask-vial" style="margin-right:8px;"></i> Laboratorios y Farmacias</span> <span class="badge badge-green">Integración</span></div>
+                <div class="list-item"><span><i class="fa-solid fa-people-group" style="margin-right:8px;"></i> Enfermeros / Familiares</span> <span class="badge badge-green">Contexto clínico</span></div>
+            </div>
+        </div>
+
+        <!-- API -->
+        <div id="api" class="section-content">
+            <div class="card">
+                <div class="card-header"><h2><i class="fa-solid fa-code-branch"></i> Arquitectura HL7 FHIR</h2><p>Estándar internacional de intercambio de datos</p></div>
+                <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:center; margin:20px 0;">
+                    <div style="background:#fff; padding:20px; border-radius:12px; border:1px solid var(--border); text-align:center;"><i class="fa-solid fa-mobile-screen" style="display:block; font-size:2rem; color:var(--primary); margin-bottom:8px;"></i> <strong>Frontend</strong><br>Portal + App</div>
+                    <i class="fa-solid fa-arrow-right-long" style="color:var(--primary); font-size:1.5rem;"></i>
+                    <div style="background:#fff; padding:20px; border-radius:12px; border:1px solid var(--border); text-align:center;"><i class="fa-solid fa-server" style="display:block; font-size:2rem; color:var(--primary); margin-bottom:8px;"></i> <strong>API Gateway</strong><br>Node.js</div>
+                    <i class="fa-solid fa-arrow-right-long" style="color:var(--primary); font-size:1.5rem;"></i>
+                    <div style="background:#fff; padding:20px; border-radius:12px; border:1px solid var(--border); text-align:center;"><i class="fa-solid fa-brain" style="display:block; font-size:2rem; color:var(--primary); margin-bottom:8px;"></i> <strong>Motor FHIR</strong><br>+ NLP</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2><i class="fa-solid fa-chart-pie"></i> Hallazgos de Investigación</h2><p>Encuestas a 25 profesionales de salud</p></div>
+                <div class="list-item"><span><i class="fa-solid fa-triangle-exclamation" style="color:var(--danger); margin-right:8px;"></i> Sistemas digitales ineficientes o lentos</span> <span class="badge badge-red">Frecuente</span></div>
+                <div class="list-item"><span><i class="fa-solid fa-puzzle-piece" style="color:var(--accent); margin-right:8px;"></i> Fragmentación de información clínica</span> <span class="badge badge-yellow">Problema #1</span></div>
+                <div class="list-item"><span><i class="fa-solid fa-bug" style="color:var(--danger); margin-right:8px;"></i> Fallas del sistema en horas críticas</span> <span class="badge badge-red">32% teme esto</span></div>
+                <div class="list-item"><span><i class="fa-solid fa-check-double" style="color:var(--success); margin-right:8px;"></i> Demanda de centralización y tiempo real</span> <span class="badge badge-green">Oportunidad</span></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2><i class="fa-solid fa-shield-halved"></i> Seguridad de Datos</h2></div>
+                <div class="list-item"><i class="fa-solid fa-check-circle" style="color:var(--success); margin-right:8px;"></i> Ley de Protección de Datos Personales</div>
+                <div class="list-item"><i class="fa-solid fa-check-circle" style="color:var(--success); margin-right:8px;"></i> Autenticación de 6 dígitos + Biometría</div>
+                <div class="list-item"><i class="fa-solid fa-check-circle" style="color:var(--success); margin-right:8px;"></i> Datos anonimizados para investigación</div>
+            </div>
+        </div>
+
+        <!-- NOSOTROS -->
+        <div id="sobre" class="section-content">
+            <div class="two-col">
+                <div class="card" style="background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color:#fff; border:none;">
+                    <i class="fa-solid fa-bullseye" style="font-size:2.5rem; margin-bottom:16px; color:var(--primary-light);"></i>
+                    <h2 style="color:#fff; border:none;">Nuestra Misión</h2>
+                    <p style="color:rgba(255,255,255,0.8);">Convertir la fragmentación de datos en una conversación fluida entre el paciente y su salud.</p>
+                </div>
+                <div class="card" style="background: linear-gradient(135deg, var(--secondary), #1e293b); color:#fff; border:none;">
+                    <i class="fa-solid fa-eye" style="font-size:2.5rem; margin-bottom:16px; color:var(--accent);"></i>
+                    <h2 style="color:#fff; border:none;">Nuestra Visión</h2>
+                    <p style="color:rgba(255,255,255,0.8);">Ser la plataforma que transforme el sistema de salud peruano, conectando a todos bajo HL7 FHIR.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2><i class="fa-solid fa-users"></i> Equipo del Proyecto</h2></div>
+                <div class="grid-4">
+                    <div class="team-card"><div class="avatar"><img src="" alt="Avatar"></div><h3 style="font-size:1rem;">Alvaro Valera</h3><p style="font-size:0.8rem; color:var(--text-light);">202420102</p></div>
+                    <div class="team-card"><div class="avatar"><img src="" alt="Avatar"></div><h3 style="font-size:1rem;">Matías Cáceres</h3><p style="font-size:0.8rem; color:var(--text-light);">202510370</p></div>
+                    <div class="team-card"><div class="avatar"><img src="" alt="Avatar"></div><h3 style="font-size:1rem;">Ruiman Martínez</h3><p style="font-size:0.8rem; color:var(--text-light);">202420107</p></div>
+                    <div class="team-card"><div class="avatar"><img src="" alt="Avatar"></div><h3 style="font-size:1rem;">Fabrizzio Huaccha</h3><p style="font-size:0.8rem; color:var(--text-light);">202520234</p></div>
+                    <div class="team-card"><div class="avatar"><img src="" alt="Avatar"></div><h3 style="font-size:1rem;">Erick Saavedra</h3><p style="font-size:0.8rem; color:var(--text-light);">202520094</p></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2><i class="fa-solid fa-graduation-cap"></i> Información Académica</h2></div>
+                <div class="list-item"><span>Curso</span><strong>Empresa y Consumidor</strong></div>
+                <div class="list-item"><span>Sección</span><strong>Teoría 26 - Salud (Healthtech)</strong></div>
+                <div class="list-item"><span>Docente</span><strong>Wong Loo, Oscar William Francisco</strong></div>
+                <div class="list-item"><span>Año</span><strong>2026-1</strong></div>
+                <div class="list-item"><span>Repositorio</span><a href="https://drive.google.com/drive/folders/11tCAAesq_PZH_UdubomIKFuxgb1XSaEG" target="_blank" style="color:var(--primary);">Ver en Drive <i class="fa-solid fa-arrow-up-right-from-square"></i></a></div>
+            </div>
+        </div>
+
+        <!-- MENSAJES -->
+        <div id="mensajes" class="section-content">
+            <div class="card">
+                <div class="card-header"><h2><i class="fa-solid fa-inbox"></i> Bandeja de Entrada</h2></div>
+                <div class="msg-item" style="border-left-color: var(--success);">
+                    <div class="msg-meta"><i class="fa-solid fa-flask-vial"></i> Laboratorio Suiza Lab | 15/06/2026</div>
+                    <div>Resultados de hemograma integrados automáticamente a la HCE. <a href="#" style="color:var(--primary); float:right;">Ver resultado</a></div>
+                </div>
+                <div class="msg-item" style="border-left-color: var(--accent);">
+                    <div class="msg-meta"><i class="fa-solid fa-shield-halved"></i> Sistema HealthConnect | 14/06/2026</div>
+                    <div>MINSA ha solicitado acceso a tu historial para investigación anonimizada. <a href="#" style="color:var(--primary); float:right;">Gestionar consentimiento</a></div>
+                </div>
+                <div class="msg-item" style="border-left-color: var(--primary);">
+                    <div class="msg-meta"><i class="fa-solid fa-user-doctor"></i> Dr. Pérez (SANNA) | 14/06/2026</div>
+                    <div>He revisado tus exámenes. Continuaremos con el tratamiento actual. <a href="#" style="color:var(--primary); float:right;">Responder</a></div>
+                </div>
+                <div class="msg-item" style="border-left-color: var(--danger);">
+                    <div class="msg-meta"><i class="fa-solid fa-calendar-xmark"></i> EsSalud | 13/06/2026</div>
+                    <div>Tu cita del 22/06 requiere confirmación. <a href="#" style="color:var(--danger); float:right;">Confirmar ya</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SERVICIOS -->
+        <div id="servicios" class="section-content">
+            <div class="card">
+                <div class="card-header"><h2><i class="fa-solid fa-route"></i> Customer Journey Map</h2><p>Experiencia del paciente en el sistema tradicional vs HealthConnect</p></div>
+                <div class="grid-4">
+                    <div style="padding:16px; background:#f8fafc; border-radius:12px;"><h3 style="margin-bottom:8px;">1. Descubrimiento</h3><p style="font-size:0.85rem; color:var(--text-light);">Paciente busca atención. Tradicionalmente pierde tiempo reuniendo exámenes previos.</p></div>
+                    <div style="padding:16px; background:#f8fafc; border-radius:12px;"><h3 style="margin-bottom:8px;">2. Consulta</h3><p style="font-size:0.85rem; color:var(--text-light);">Médico accede al historial unificado en segundos. Foco 100% en el paciente.</p></div>
+                    <div style="padding:16px; background:#f8fafc; border-radius:12px;"><h3 style="margin-bottom:8px;">3. Diagnóstico</h3><p style="font-size:0.85rem; color:var(--text-light);">IA asiste con segunda opinión. Se evitan exámenes duplicados.</p></div>
+                    <div style="padding:16px; background:#f8fafc; border-radius:12px;"><h3 style="margin-bottom:8px;">4. Seguimiento</h3><p style="font-size:0.85rem; color:var(--text-light);">Recordatorios de medicamentos y próximas citas vía app móvil.</p></div>
+                </div>
+            </div>
+            <div class="grid-3">
+                <div class="card"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" style="width:100%; height:200px; object-fit:cover; border-radius:8px; margin-bottom:16px;"><h3>Guías del Paciente</h3><p style="font-size:0.85rem; color:var(--text-light); margin-bottom:16px;">Aprende a gestionar tus consentimientos y datos digitales.</p><button class="btn btn-teal btn-sm">Ver guías</button></div>
+                <div class="card"><img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=400&auto=format&fit=crop" style="width:100%; height:200px; object-fit:cover; border-radius:8px; margin-bottom:16px;"><h3>Capacitaciones Médicas</h3><p style="font-size:0.85rem; color:var(--text-light); margin-bottom:16px;">Webinars sobre el uso de HL7 FHIR en consulta diaria.</p><button class="btn btn-teal btn-sm">Inscribirme</button></div>
+                <div class="card"><img src="https://images.unsplash.com/photo-1581090700227-1e37b190418e?q=80&w=400&auto=format&fit=crop" style="width:100%; height:200px; object-fit:cover; border-radius:8px; margin-bottom:16px;"><h3>API para Desarrolladores</h3><p style="font-size:0.85rem; color:var(--text-light); margin-bottom:16px;">Crea apps de salud sobre nuestra red interoperable.</p><button class="btn btn-teal btn-sm">Ver docs</button></div>
+            </div>
+        </div>
+
+        <!-- PERFIL -->
+        <div id="perfil" class="section-content">
+            <div class="card" style="text-align:center; padding-top:40px;">
+                <div style="width:100px; height:100px; background:linear-gradient(135deg, var(--primary), var(--primary-light)); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:2.5rem;"><i class="fa-solid fa-user"></i></div>
+                <h2 style="border:none; padding:0; justify-content:center;">Dra. Katherine Espinoza</h2>
+                <p style="color:var(--text-light); margin-bottom:16px;">katherine.espinoza@healthconnect.pe</p>
+                <button class="btn btn-teal btn-sm"><i class="fa-solid fa-pen"></i> Editar Perfil</button>
+            </div>
+            <div class="card">
+                <div class="card-header"><h2><i class="fa-solid fa-lock"></i> Seguridad y Acceso</h2></div>
+                <div class="list-item"><span><i class="fa-solid fa-key" style="margin-right:8px;"></i> Cambiar contraseña</span> <a href="#" style="color:var(--primary);">Cambiar</a></div>
+                <div class="list-item"><span><i class="fa-solid fa-mobile-screen" style="margin-right:8px;"></i> Verificación en 2 pasos</span> <span class="toggle on"></span></div>
+                <div class="list-item"><span><i class="fa-solid fa-fingerprint" style="margin-right:8px;"></i> Biometría (Huella)</span> <span class="toggle on"></span></div>
+            </div>
+            <div class="card">
+                <div class="card-header"><h2><i class="fa-solid fa-bell"></i> Notificaciones</h2></div>
+                <div class="toggle-row"><span>Recordatorios de medicamentos</span><span class="toggle on"></span></div>
+                <div class="toggle-row"><span>Resultados de laboratorio nuevos</span><span class="toggle on"></span></div>
+                <div class="toggle-row"><span>Alertas de exámenes duplicados</span><span class="toggle on"></span></div>
+                <div class="toggle-row"><span>Boletín informativo de salud</span><span class="toggle"></span></div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        © 2026 HealthConnect Perú · Proyecto Académico Empresa y Consumidor (Teoría 26)
+        <div style="margin-top:8px;">
+            <a href="https://drive.google.com/drive/folders/11tCAAesq_PZH_UdubomIKFuxgb1XSaEG" target="_blank">Repositorio del Proyecto</a>
+        </div>
+    </footer>
+
+    <script>
+        // --- NAVEGACIÓN ---
+        const mobileNav = document.getElementById('mobileNav');
+        const overlay = document.getElementById('overlay');
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const closeNavBtn = document.getElementById('closeNavBtn');
+
+        function navigate(sectionName) {
+            document.querySelectorAll('.section-content').forEach(sec => sec.classList.remove('active'));
+            const target = document.getElementById(sectionName);
+            if (target) target.classList.add('active');
+
+            document.querySelectorAll('.nav-desktop button, .mobile-nav button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.section === sectionName);
+            });
+
+            mobileNav.classList.remove('open');
+            overlay.classList.remove('show');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('button[data-section]');
+            if (btn) navigate(btn.dataset.section);
+            if (e.target.classList.contains('toggle')) e.target.classList.toggle('on');
+        });
+
+        hamburgerBtn.addEventListener('click', () => { mobileNav.classList.add('open'); overlay.classList.add('show'); });
+        closeNavBtn.addEventListener('click', () => { mobileNav.classList.remove('open'); overlay.classList.remove('show'); });
+        overlay.addEventListener('click', () => { mobileNav.classList.remove('open'); overlay.classList.remove('show'); });
+    </script>
+</body>
+</html>
